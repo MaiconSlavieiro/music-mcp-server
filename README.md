@@ -1,197 +1,197 @@
 # Music MCP Server
 
-Servidor MCP (Model Context Protocol) unificado para **Spotify** e **Genius**, com setup wizard web integrado.
+A self-hosted MCP (Model Context Protocol) server that lets AI assistants control Spotify playback, manage playlists, and fetch lyrics and song metadata from Genius — with a built-in web setup wizard.
 
-Permite que assistentes de IA (Kiro, Claude, Cursor, etc.) controlem playback do Spotify, gerenciem playlists, busquem letras e metadados de músicas via Genius — tudo através de um único endpoint MCP.
+Works with Kiro, Claude Desktop, Cursor, and any MCP-compatible client.
 
 ## Quick Start
 
-### Com Docker (recomendado)
+### With Docker (recommended)
 
 ```bash
 cp .env.example .env
-# edite o .env com suas credenciais
+# edit .env with your credentials
 echo '{}' > config.json
 docker compose up -d
 ```
 
-### Sem Docker
+### Without Docker
 
 ```bash
 npm install
 npm run build
 cp .env.example .env
-# edite o .env
+# edit .env
 npm start
 ```
 
-### Desenvolvimento
+### Development
 
 ```bash
 npm run dev
 ```
 
-Após iniciar, acesse o setup wizard em `http://localhost:18960/setup`.
+Once running, open the setup wizard at `http://127.0.0.1:18960/setup`.
 
 ## Setup Wizard
 
-O servidor inclui um wizard web que guia a configuração passo a passo:
+The server includes a web wizard that walks you through configuration step by step:
 
-1. **Welcome** — Define a Base URL do servidor (usada para OAuth callbacks e endpoint MCP)
-2. **Spotify** — Client ID/Secret + autenticação OAuth
-3. **Genius** — Access Token da API
-4. **Security** — Token MCP (Bearer) e credenciais da interface web
-5. **Summary** — Testa todas as integrações e exibe a config MCP para copiar
+1. **Welcome** — Set the server Base URL (used for OAuth callbacks and MCP endpoint)
+2. **Spotify** — Client ID/Secret + OAuth authentication
+3. **Genius** — API Access Token
+4. **Security** — MCP Bearer token and web interface credentials
+5. **Summary** — Tests all integrations and shows the MCP config to copy
 
-## Configuração
+## Configuration
 
-### Variáveis de Ambiente
+### Environment Variables
 
-| Variável | Descrição | Default |
+| Variable | Description | Default |
 |---|---|---|
-| `PORT` | Porta do servidor | `18960` |
-| `BASE_URL` | URL pública do servidor | `http://localhost:18960` |
-| `WEB_USERNAME` | Usuário para Basic Auth do wizard | — |
-| `WEB_PASSWORD` | Senha para Basic Auth do wizard | — |
-| `MCP_AUTH_TOKEN` | Bearer token para o endpoint MCP | — |
-| `SPOTIFY_CLIENT_ID` | Client ID do Spotify | — |
-| `SPOTIFY_CLIENT_SECRET` | Client Secret do Spotify | — |
-| `GENIUS_ACCESS_TOKEN` | Access Token do Genius | — |
+| `PORT` | Server port | `18960` |
+| `BASE_URL` | Public server URL | `http://127.0.0.1:18960` |
+| `WEB_USERNAME` | Basic Auth user for the wizard | — |
+| `WEB_PASSWORD` | Basic Auth password for the wizard | — |
+| `MCP_AUTH_TOKEN` | Bearer token for the MCP endpoint | — |
+| `SPOTIFY_CLIENT_ID` | Spotify Client ID | — |
+| `SPOTIFY_CLIENT_SECRET` | Spotify Client Secret | — |
+| `GENIUS_ACCESS_TOKEN` | Genius Access Token | — |
 
-As variáveis de ambiente servem como bootstrap inicial. Após configurar via wizard, os valores são persistidos em `config.json` e têm prioridade.
+Environment variables serve as initial bootstrap. Once configured via the wizard, values are persisted in `config.json` and take priority.
 
 ### config.json
 
-Arquivo de persistência local com tokens, credenciais e estado da aplicação. Criado automaticamente. Não commitar (já está no `.gitignore`).
+Local persistence file for tokens, credentials, and application state. Created automatically. Do not commit (already in `.gitignore`).
 
-## Conectando ao MCP Client
+## Connecting to an MCP Client
 
-Adicione ao seu `mcp.json` (Kiro, Claude Desktop, Cursor, etc.):
+Add to your `mcp.json` (Kiro, Claude Desktop, Cursor, etc.):
 
 ```json
 {
   "mcpServers": {
     "music": {
       "type": "http",
-      "url": "http://localhost:18960/mcp",
+      "url": "http://127.0.0.1:18960/mcp",
       "headers": {
-        "Authorization": "Bearer SEU_TOKEN_AQUI"
+        "Authorization": "Bearer YOUR_TOKEN_HERE"
       }
     }
   }
 }
 ```
 
-O wizard gera essa config automaticamente na página Summary.
+The wizard generates this config automatically on the Summary page.
 
-## Tools Disponíveis
+## Available Tools
 
-### Spotify — Busca e Leitura
+### Spotify — Search & Read
 
-| Tool | Descrição |
+| Tool | Description |
 |---|---|
-| `searchSpotify` | Busca tracks, albums, artists ou playlists |
-| `getNowPlaying` | Track tocando agora + device e volume |
-| `getMyPlaylists` | Playlists do usuário |
-| `getPlaylistTracks` | Tracks de uma playlist |
-| `getRecentlyPlayed` | Histórico recente |
-| `getUsersSavedTracks` | Músicas curtidas (Liked Songs) |
-| `getQueue` | Fila de reprodução |
-| `getAvailableDevices` | Dispositivos Spotify Connect |
+| `searchSpotify` | Search for tracks, albums, artists, or playlists |
+| `getNowPlaying` | Currently playing track + device and volume info |
+| `getMyPlaylists` | Current user's playlists |
+| `getPlaylistTracks` | Tracks in a playlist |
+| `getRecentlyPlayed` | Recently played tracks |
+| `getUsersSavedTracks` | Liked Songs |
+| `getQueue` | Playback queue |
+| `getAvailableDevices` | Spotify Connect devices |
 
 ### Spotify — Playback
 
-| Tool | Descrição |
+| Tool | Description |
 |---|---|
-| `playMusic` | Tocar track, album, artist ou playlist |
-| `pausePlayback` | Pausar |
-| `resumePlayback` | Retomar |
-| `skipToNext` | Próxima faixa |
-| `skipToPrevious` | Faixa anterior |
-| `addToQueue` | Adicionar à fila |
-| `setVolume` | Definir volume (0-100) |
-| `adjustVolume` | Ajustar volume relativamente |
+| `playMusic` | Play a track, album, artist, or playlist |
+| `pausePlayback` | Pause playback |
+| `resumePlayback` | Resume playback |
+| `skipToNext` | Skip to next track |
+| `skipToPrevious` | Skip to previous track |
+| `addToQueue` | Add item to queue |
+| `setVolume` | Set volume (0-100) |
+| `adjustVolume` | Adjust volume by relative amount |
 
 ### Spotify — Playlists
 
-| Tool | Descrição |
+| Tool | Description |
 |---|---|
-| `createPlaylist` | Criar playlist |
-| `addTracksToPlaylist` | Adicionar tracks |
-| `getPlaylist` | Detalhes de uma playlist |
-| `updatePlaylist` | Atualizar nome, descrição, visibilidade |
-| `removeTracksFromPlaylist` | Remover tracks |
-| `reorderPlaylistItems` | Reordenar tracks |
+| `createPlaylist` | Create a new playlist |
+| `addTracksToPlaylist` | Add tracks to a playlist |
+| `getPlaylist` | Get playlist details |
+| `updatePlaylist` | Update name, description, visibility |
+| `removeTracksFromPlaylist` | Remove tracks from a playlist |
+| `reorderPlaylistItems` | Reorder tracks in a playlist |
 
 ### Spotify — Albums
 
-| Tool | Descrição |
+| Tool | Description |
 |---|---|
-| `getAlbums` | Detalhes de album(s) |
-| `getAlbumTracks` | Tracks de um album |
-| `saveOrRemoveAlbumForUser` | Salvar/remover album da biblioteca |
-| `checkUsersSavedAlbums` | Verificar se albums estão salvos |
+| `getAlbums` | Get album details by ID(s) |
+| `getAlbumTracks` | Get tracks from an album |
+| `saveOrRemoveAlbumForUser` | Save or remove albums from library |
+| `checkUsersSavedAlbums` | Check if albums are saved |
 
 ### Spotify — Library
 
-| Tool | Descrição |
+| Tool | Description |
 |---|---|
-| `removeUsersSavedTracks` | Remover tracks das Liked Songs |
+| `removeUsersSavedTracks` | Remove tracks from Liked Songs |
 
 ### Genius
 
-| Tool | Descrição |
+| Tool | Description |
 |---|---|
-| `searchGeniusSong` | Buscar músicas no Genius |
-| `getLyrics` | Letra completa de uma música |
-| `getSongInfo` | Metadados (produtores, escritores, data, etc.) |
-| `getGeniusArtistInfo` | Info do artista + top songs |
+| `searchGeniusSong` | Search for songs on Genius |
+| `getLyrics` | Get full song lyrics |
+| `getSongInfo` | Song metadata (producers, writers, release date, etc.) |
+| `getGeniusArtistInfo` | Artist info + top songs |
 
-## Endpoints HTTP
+## HTTP Endpoints
 
-| Método | Path | Auth | Descrição |
+| Method | Path | Auth | Description |
 |---|---|---|---|
 | GET | `/health` | — | Health check |
-| GET | `/setup` | Basic | Wizard de configuração |
-| GET | `/mcp` | Bearer | Endpoint MCP (httpStream) |
-| GET | `/api/status` | Basic | Status das integrações |
-| GET | `/api/test-all` | Basic | Testa todas as integrações |
-| GET | `/icon.svg` | — | Ícone do servidor |
+| GET | `/setup` | Basic | Setup wizard |
+| GET | `/mcp` | Bearer | MCP endpoint (httpStream) |
+| GET | `/api/status` | Basic | Integration status |
+| GET | `/api/test-all` | Basic | Test all integrations |
+| GET | `/icon.svg` | — | Server icon |
 
-## Obtendo Credenciais
+## Getting Credentials
 
 ### Spotify
 
-1. Acesse [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard)
-2. Crie um app
-3. Adicione o Redirect URI: `{BASE_URL}/spotify/callback`
-4. Copie Client ID e Client Secret
+1. Go to [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard)
+2. Create an app
+3. Add the Redirect URI: `{BASE_URL}/spotify/callback`
+4. Copy the Client ID and Client Secret
 
-> **Importante:** O Spotify não aceita `localhost` como Redirect URI. As regras atuais são:
-> - Use HTTPS, exceto para loopback addresses
-> - Para desenvolvimento local, use o IP explícito: `http://127.0.0.1:18960/spotify/callback` ou `http://[::1]:18960/spotify/callback`
-> - `localhost` não é permitido
+> **Important:** Spotify does not allow `localhost` as a Redirect URI. The current rules are:
+> - HTTPS is required, except for loopback addresses
+> - For local development, use the explicit IP: `http://127.0.0.1:18960/spotify/callback` or `http://[::1]:18960/spotify/callback`
+> - `localhost` is not permitted
 >
-> Para expor o servidor com HTTPS (necessário em produção e recomendado em dev), veja as opções abaixo.
+> For HTTPS access (required in production), see the options below.
 
-#### Expondo o servidor
+#### Exposing the Server
 
-**Cloudflare Tunnel (recomendado para uso pessoal)**
+**Cloudflare Tunnel (recommended for personal use)**
 
-Cria um túnel seguro sem precisar abrir portas ou configurar certificados:
+Creates a secure tunnel without opening ports or configuring certificates:
 
 ```bash
-# instalar cloudflared e autenticar
+# install cloudflared and authenticate
 cloudflared tunnel login
 cloudflared tunnel create music-mcp
 
-# rodar o túnel apontando para o servidor local
+# run the tunnel pointing to the local server
 cloudflared tunnel --url http://localhost:18960
 ```
 
-O Cloudflare gera uma URL `https://*.trycloudflare.com` que pode ser usada como Base URL e Redirect URI no Spotify.
+Cloudflare generates a `https://*.trycloudflare.com` URL that can be used as the Base URL and Redirect URI in Spotify.
 
-Para um subdomínio fixo, configure um tunnel nomeado com DNS route no seu domínio.
+For a fixed subdomain, set up a named tunnel with a DNS route on your domain.
 
 **ngrok**
 
@@ -199,54 +199,58 @@ Para um subdomínio fixo, configure um tunnel nomeado com DNS route no seu domí
 ngrok http 18960
 ```
 
-Gera uma URL HTTPS temporária. Útil para testes rápidos, mas a URL muda a cada reinício (a menos que use um domínio fixo no plano pago).
+Generates a temporary HTTPS URL. Useful for quick tests, but the URL changes on every restart (unless you use a fixed domain on the paid plan).
 
-**Reverse proxy (produção)**
+**Reverse proxy (production)**
 
-Nginx, Caddy ou Traefik com certificado SSL apontando para o servidor. Exemplo com Caddy:
+Nginx, Caddy, or Traefik with an SSL certificate pointing to the server. Example with Caddy:
 
 ```
-music.seudominio.com {
+music.yourdomain.com {
     reverse_proxy localhost:18960
 }
 ```
 
-Caddy gera certificados Let's Encrypt automaticamente.
+Caddy automatically provisions Let's Encrypt certificates.
 
 ### Genius
 
-1. Acesse [genius.com/api-clients](https://genius.com/api-clients)
-2. Crie um novo API Client:
+1. Go to [genius.com/api-clients](https://genius.com/api-clients)
+2. Create a new API Client:
    - **App Name:** Music MCP Server
    - **Icon URL:** `{BASE_URL}/icon.svg`
    - **App Website URL:** `{BASE_URL}`
    - **Redirect URI:** `http://localhost`
-3. Clique em "Generate Access Token" e copie
+3. Click "Generate Access Token" and copy it
 
-## Arquitetura
+## Architecture
 
 ```
 src/
-├── index.ts              # Entry point, registro de tools e rotas HTTP
-├── config.ts             # Persistência de config (config.json + env vars)
-├── cache.ts              # Cache em memória com TTL
+├── index.ts              # Entry point, tool registration, and HTTP routes
+├── config.ts             # Config persistence (config.json + env vars)
+├── cache.ts              # In-memory cache with TTL
 ├── auth/
-│   └── rate-limiter.ts   # Rate limiting para Basic Auth
+│   └── rate-limiter.ts   # Rate limiting for Basic Auth
 ├── spotify/
-│   ├── client.ts         # SDK do Spotify, token refresh, helpers
-│   ├── tools.ts          # Tools de busca e leitura
-│   ├── playback-tools.ts # Tools de controle de playback
-│   ├── playlist-tools.ts # Tools de gerenciamento de playlists
-│   └── album-tools.ts    # Tools de albums
+│   ├── client.ts         # Spotify SDK, token refresh, helpers
+│   ├── tools.ts          # Search and read tools
+│   ├── playback-tools.ts # Playback control tools
+│   ├── playlist-tools.ts # Playlist management tools
+│   └── album-tools.ts    # Album tools
 ├── genius/
-│   ├── client.ts         # Cliente da API Genius + scraping de letras
-│   └── tools.ts          # Tools do Genius
+│   ├── client.ts         # Genius API client + lyrics scraping
+│   └── tools.ts          # Genius tools
 └── web/
-    └── pages.ts          # HTML do setup wizard
+    └── pages.ts          # Setup wizard HTML
 ```
 
-- **Framework MCP:** [fastmcp](https://github.com/jlowin/fastmcp) com transporte httpStream
+- **MCP Framework:** [fastmcp](https://github.com/jlowin/fastmcp) with httpStream transport
 - **HTTP:** Hono (via fastmcp)
 - **Spotify SDK:** [@spotify/web-api-ts-sdk](https://github.com/spotify/spotify-web-api-ts-sdk)
-- **Validação:** Zod
-- **Lyrics:** Cheerio (scraping do Genius)
+- **Validation:** Zod
+- **Lyrics:** Cheerio (Genius scraping)
+
+## License
+
+[MIT](LICENSE)
