@@ -176,42 +176,11 @@ The wizard generates this config automatically on the Summary page.
 
 #### Exposing the Server
 
-**Cloudflare Tunnel (recommended for personal use)**
+If you need HTTPS (production, or a fixed public URL), here are some options:
 
-Creates a secure tunnel without opening ports or configuring certificates:
-
-```bash
-# install cloudflared and authenticate
-cloudflared tunnel login
-cloudflared tunnel create music-mcp
-
-# run the tunnel pointing to the local server
-cloudflared tunnel --url http://localhost:18960
-```
-
-Cloudflare generates a `https://*.trycloudflare.com` URL that can be used as the Base URL and Redirect URI in Spotify.
-
-For a fixed subdomain, set up a named tunnel with a DNS route on your domain.
-
-**ngrok**
-
-```bash
-ngrok http 18960
-```
-
-Generates a temporary HTTPS URL. Useful for quick tests, but the URL changes on every restart (unless you use a fixed domain on the paid plan).
-
-**Reverse proxy (production)**
-
-Nginx, Caddy, or Traefik with an SSL certificate pointing to the server. Example with Caddy:
-
-```
-music.yourdomain.com {
-    reverse_proxy localhost:18960
-}
-```
-
-Caddy automatically provisions Let's Encrypt certificates.
+- **Cloudflare Tunnel** — secure tunnel, no open ports needed. [Docs](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
+- **ngrok** — quick temporary HTTPS URLs. [Docs](https://ngrok.com/docs/)
+- **Reverse proxy** (Caddy, Nginx, Traefik) — for self-hosted production setups with your own domain and SSL certificates.
 
 ### Genius
 
