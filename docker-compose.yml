@@ -1,0 +1,11 @@
+services:
+  music-mcp:
+    build: .
+    container_name: music-mcp-server
+    restart: unless-stopped
+    ports:
+      - "${PORT:-18960}:${PORT:-18960}"
+    env_file:
+      - .env
+    volumes:
+      - ./config.json:/app/config.json

@@ -1,0 +1,24 @@
+{
+  "name": "music-mcp-server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Unified MCP server for Spotify + Genius with setup wizard",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "npx --no-install tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node build/index.js",
+    "typecheck": "npx --no-install tsc --noEmit"
+  },
+  "dependencies": {
+    "@spotify/web-api-ts-sdk": "^1.2.0",
+    "cheerio": "^1.0.0",
+    "fastmcp": "^3.35.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.8",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.2"
+  }
+}
